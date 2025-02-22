@@ -29,18 +29,23 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         pod_name = payload.pod_name
         kind = payload.kind
 
-        if self.path == "/event/create":
-            status = Event.PENDING
-        elif self.path ==  "/event/finish":
-            reply = payload.reply
-            status = Event.FINISHED
-        elif self.path = "/event/fail":
-            status = Event.FAIL
-
         results = Pod.objects.filter(name=pod_name)
         if len(results) == 0:
             # TODO update from kubernetes
             return
+
+        if self.path == "/event/create":
+            results[0].status = Pod.AFFECTED
+            status = Event.PENDING
+        elif self.path ==  "/event/finish":
+            reply = payload.reply
+            status = Event.FINISHED
+            results[0].status = Pod.ALIVE
+        elif self.path == "/event/fail":
+            status = Event.FAIL
+            results[0].status = Pod.DEAD
+
+        results[0].save()
 
         if reply != None:
             event = Event(status=status, pod=results[0], event_id=event_id, kind=kind, reply=reply)
