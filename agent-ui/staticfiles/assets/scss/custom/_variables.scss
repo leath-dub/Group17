@@ -1,0 +1,39 @@
+
+$kt-height-base:                  38px;
+$kt-height-header:                64px;
+$kt-height-header-mobile:         60px;
+$kt-height-navbar:                48px;
+$kt-height-navbar-compact:        42px;
+$kt-height-footer:                40px;
+$kt-height-content:               calc(100vh - #{$kt-height-header + $kt-height-footer});
+
+$kt-width-sidebar:                240px;
+$kt-width-iconbar-aside:          230px;
+
+$kt-border-color:                 rgba($gray-900, .2);
+$kt-border-base:                  #dee2ef;
+
+$ckbox-size:                      16px;
+$rdiobox-size:                    16px;
+
+$kt-color-primary:                $indigo;
+$kt-color-secondary:              $blue;
+$kt-color-headline:               #031b4e;
+$kt-color-text:                   #4e5f83;
+
+$font-size-sm:                    13px;
+$font-size-md:                    $font-size-base + 0.0625;
+$font-weight:                     500;
+
+$input-btn-focus-color:           rgba($kt-color-primary, .25);
+
+
+$content-bg: #f2edf3;
+$card-bg-varient: #fff;
+$private-btn-bg:#eae2ec;
+
+$tab-head-bg: darken(#f2edf3, 2%);
+$accent-color: $white;
+
+$accordian-shadow-color:rgba(230, 234, 236, 0.35);
+$text-gray:gray;

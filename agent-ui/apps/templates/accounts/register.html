@@ -1,0 +1,87 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Register {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="kt-signup-wrapper">
+      <div class="kt-column-signup-left">
+        <div>
+          <i class="typcn typcn-chart-bar-outline"></i>
+          <h1 class="kt-logo">Katana</h1>
+          <h5>Kubernetes Cluster Manager</h5>
+          <p>We are excited to launch our new product Katana.
+             Katana is a powerful and flexible tool providing extensive interface to monitor and control your kubernetes clusers.
+          Powered with AI that eliminates and fixes any kind of issues, it provides an advanced automation tool for system administrators.</p>
+        </div>
+      </div><!-- kt-column-signup-left -->
+      <div class="kt-column-signup">
+        <h1 class="kt-logo">Katana</h1>
+
+        <div class="kt-signup-header">
+          <h2>Register</h2>
+          
+          <h4>
+              <span class="mb-0 text-muted">
+                  {% if msg %}
+                      {{ msg | safe }}
+                  {% else %}
+                      Add your credentials
+                  {% endif %} 
+              </span>          
+          </h4>
+
+          {% if success %}
+
+            <a href="{% url 'login' %}" class="btn btn-kt-primary btn-block">Sign IN</a>
+
+          {% else %}
+
+            <form role="form" method="post" action="">
+
+              {% csrf_token %}
+
+              <div class="form-group">
+                <label>Username</label>
+                {{ form.username }}
+              </div><!-- form-group -->
+              <span class="text-error">{{ form.username.errors }}</span>
+              
+              <div class="form-group">
+                <label>Email</label>
+                  {{ form.email }}
+              </div><!-- form-group -->
+              <span class="text-error">{{ form.email.errors }}</span>
+
+              <div class="form-group">
+                <label>Password</label>
+                {{ form.password1 }}
+              </div><!-- form-group -->
+              <span class="text-error">{{ form.password1.errors }}</span>
+
+              <div class="form-group">
+                <label>Password</label>
+                {{ form.password2 }}
+              </div><!-- form-group -->            
+              <span class="text-error">{{ form.password2.errors }}</span>
+
+              <button type="submit" name="register" class="btn btn-kt-primary btn-block">Create Account</button>
+
+            </form>
+        
+          {% endif %}
+
+        </div><!-- kt-signup-header -->
+        <div class="kt-signup-footer">
+          <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+        </div><!-- kt-signin-footer -->
+      </div><!-- kt-column-signup -->
+    </div><!-- kt-signup-wrapper -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

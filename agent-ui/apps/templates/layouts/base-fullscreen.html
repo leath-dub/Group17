@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ ASSETS_ROOT }}/favicon.png">
+
+    <!-- Twitter -->
+    <!-- <meta name="twitter:site" content="@bootstrapdash">
+    <meta name="twitter:creator" content="@bootstrapdash">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Katana">
+    <meta name="twitter:description" content="Responsive Bootstrap 4 Dashboard Template">
+    <meta name="twitter:image" content="https://www.bootstrapdash.com/Katana/img/Katana-social.png"> -->
+
+    <!-- Facebook -->
+    <!-- <meta property="og:url" content="https://www.bootstrapdash.com/Katana">
+    <meta property="og:title" content="Katana">
+    <meta property="og:description" content="Responsive Bootstrap 4 Dashboard Template">
+
+    <meta property="og:image" content="https://www.bootstrapdash.com/Katana/img/Katana-social.png">
+    <meta property="og:image:secure_url" content="https://www.bootstrapdash.com/Katana/img/Katana-social.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="600"> -->
+
+    <!-- Meta -->
+    <meta name="description" content="Responsive Bootstrap 4 Dashboard Template">
+    <meta name="author" content="BootstrapDash">
+
+    <title>
+        Django Katana Dashboard - {% block title %}{% endblock %} | Katana
+    </title>
+
+    <!-- vendor css -->
+    <link href="{{ ASSETS_ROOT }}/lib/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="{{ ASSETS_ROOT }}/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="{{ ASSETS_ROOT }}/lib/typicons.font/typicons.css" rel="stylesheet">
+
+    <!-- Katana CSS -->
+    <link rel="stylesheet" href="{{ ASSETS_ROOT }}/css/Katana.css">
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+  </head>
+  <body class="kt-body">
+
+    {% block content %}{% endblock content %}
+
+    {% include 'includes/scripts.html' %}
+
+    <script src="{{ ASSETS_ROOT }}/js/Katana.js"></script>
+
+    <!-- Specific Page JS goes HERE  -->
+    {% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>

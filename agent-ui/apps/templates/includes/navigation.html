@@ -1,0 +1,82 @@
+
+    <div class="kt-header">
+      <div class="container">
+        <div class="kt-header-left">
+          <a href="index.html" class="kt-logo"><span></span> Katana</a>
+          <a href="" id="azMenuShow" class="kt-header-menu-icon d-lg-none"><span></span></a>
+        </div><!-- kt-header-left -->
+        <div class="kt-header-menu">
+          <div class="kt-header-menu-header">
+            <a href="index.html" class="kt-logo"><span></span> Katana</a>
+            <a href="" class="close">&times;</a>
+          </div><!-- kt-header-menu-header -->
+          <ul class="nav">
+            <!-- empty -->
+          </ul>
+        </div><!-- kt-header-menu -->
+        <div class="kt-header-right">
+          <div class="dropdown kt-header-notification">
+            <a href="" class="new"><i class="typcn typcn-bell"></i></a>
+            <div class="dropdown-menu">
+              <div class="kt-dropdown-header mg-b-20 d-sm-none">
+                <a href="" class="kt-header-arrow"><i class="icon ion-md-arrow-back"></i></a>
+              </div>
+              <h6 class="kt-notification-title">Notifications</h6>
+              <p class="kt-notification-text">You have {{events}} unread notification</p>
+              <div class="kt-notification-list">
+                <div class="media new">
+                  <div class="kt-img-user"><img src="{{ ASSETS_ROOT }}/img/faces/face1.jpg" alt=""></div>
+                  <div class="media-body">
+                    <p>Congratulate <strong>Socrates Itumay</strong> for work anniversaries</p>
+                    <span>Mar 15 12:32pm</span>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+                <div class="media new">
+                  <div class="kt-img-user online"><img src="{{ ASSETS_ROOT }}/img/faces/face3.jpg" alt=""></div>
+                  <div class="media-body">
+                    <p><strong>Joyce Chua</strong> just created a new blog post</p>
+                    <span>Mar 13 04:16am</span>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+                <div class="media">
+                  <div class="kt-img-user"><img src="{{ ASSETS_ROOT }}/img/faces/face4.jpg" alt=""></div>
+                  <div class="media-body">
+                    <p><strong>Althea Cabardo</strong> just created a new blog post</p>
+                    <span>Mar 13 02:56am</span>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+                <div class="media">
+                  <div class="kt-img-user"><img src="{{ ASSETS_ROOT }}/img/faces/face5.jpg" alt=""></div>
+                  <div class="media-body">
+                    <p><strong>Adrian Monino</strong> added new comment on your photo</p>
+                    <span>Mar 12 10:40pm</span>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+              </div><!-- kt-notification-list -->
+              <div class="dropdown-footer"><a href="">View All Notifications</a></div>
+            </div><!-- dropdown-menu -->
+          </div><!-- kt-header-notification -->
+          <div class="dropdown kt-profile-menu">
+            <a href="" class="kt-img-user"><img src="{{ ASSETS_ROOT }}/img/user.png" alt=""></a>
+            <div class="dropdown-menu">
+              <div class="kt-dropdown-header d-sm-none">
+                <a href="" class="kt-header-arrow"><i class="icon ion-md-arrow-back"></i></a>
+              </div>
+              <div class="kt-header-profile">
+                <div class="kt-img-user">
+                  <img src="{{ ASSETS_ROOT }}/img/user.png" alt="">
+                </div><!-- kt-img-user -->
+                <h6>
+                  {{ request.user.username }}
+                </h6>
+                <span>
+                  {{ request.user.email }}
+                </span>
+              </div><!-- kt-header-profile -->
+
+              <a href="{% url 'logout' %}" class="dropdown-item"><i class="typcn typcn-power-outline"></i> Sign Out</a>
+            </div><!-- dropdown-menu -->
+          </div>
+        </div><!-- kt-header-right -->
+      </div><!-- container -->
+    </div><!-- kt-header -->
