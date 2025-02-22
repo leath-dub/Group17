@@ -8,7 +8,7 @@ from django.template import loader
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 
-
+from core.utils import mk_paginator
 from .models import Cluster, Pod, Event
 
 
@@ -32,7 +32,7 @@ def get_pod_events(request, pod_id):
 
     context = {
         'pod': pod,
-        'events': events,
+        'events': mk_paginator(request, events, 5),
         'event_count': events.count(),
     }
 
