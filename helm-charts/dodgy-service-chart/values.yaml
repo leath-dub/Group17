@@ -26,4 +26,24 @@ service:
       port: 8000
       targetPort: 8000
 
-scrapeInterval: 5s
+scrapeInterval: 1s
+
+alertmanager:
+  alertmanagerSpec:
+    config: |-
+      route:
+        group_by: ['alertname', 'pod']
+        receiver: 'default'
+        routes:
+          - match:
+              severity: severe
+            receiver: 'webhook_receiver'
+            group_interval: 30s
+            repeat_interval: 1m
+
+    receivers:
+      - name: default
+        # potentially slack or something
+      - name: webhook_receiver
+        webhook_configs:
+          - url: "http://agent-chart-agent-service.default.svc.cluster.local:80/alert"

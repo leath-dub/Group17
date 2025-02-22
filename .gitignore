@@ -1,3 +1,7 @@
+# Ignore secrets files
+secrets.env
+secret.yaml
+
 # Ignore Helm dependency charts (when `helm dependency update` is run)
 charts/
 *.tgz

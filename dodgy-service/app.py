@@ -34,7 +34,7 @@ def generate_metrics():
         memory_usage.set(random.uniform(*MEMORY_RANGE) if not overload_memory else random.uniform(900, 1200))
         disk_usage.set(random.uniform(*DISK_RANGE) if not overload_disk else random.uniform(90, 99))
         request_latency.set(random.uniform(*LATENCY_RANGE) if not overload_latency else random.uniform(5, 10))
-        time.sleep(5)
+        time.sleep(1)
 
 # Flask routes to trigger overload scenarios
 @app.route("/overload-cpu")

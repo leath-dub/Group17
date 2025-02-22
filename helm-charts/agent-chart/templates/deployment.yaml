@@ -19,3 +19,20 @@ spec:
           ports:
             - containerPort: {{ .Values.service.containerPort }}
               name: container-http
+          env:
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: agent-secrets
+                key: OPENAI_API_KEY
+          - name: OPENAI_PROJECT_ID
+            valueFrom:
+              secretKeyRef:
+                name: agent-secrets
+                key: OPENAI_PROJECT_ID
+          - name: OPENAI_ORG_ID
+            valueFrom:
+              secretKeyRef:
+                name: agent-secrets
+                key: OPENAI_ORG_ID
+              
