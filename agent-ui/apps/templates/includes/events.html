@@ -1,0 +1,26 @@
+
+			<header class="border-bottom mb-4 pb-3">
+				<span class="mr-md-auto"><b>{{ event_count }}</b> event{{ event_count|pluralize }} for {{ pod.id }}</span>
+			</header>
+
+			{% if events %}
+			{% for event in events %}
+			<div class="az-list-item">
+                    <div>
+                      <h6>{{ event.name }}</h6>
+                      <span>some</span>
+                    </div>
+                    <div>
+                      <h6 class="tx-primary">{{ event.status }}</h6>
+                      <span>{{ event.status }}</span>
+                    </div>
+			</div>
+			{% endfor %}
+			{% else %}
+			<div class="az-list-item">
+                    <div>
+                      <span>No pod selected.</span>
+					</div>
+			</div>
+			{% endif %}
+			{% include "partials/_pagination.html" with page_obj=products %}
