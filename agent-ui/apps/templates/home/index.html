@@ -47,7 +47,7 @@
             </nav>
 
             <nav class="nav">
-              <a class="nav-link" href="#"><i class="far fa-save"></i> Save Topology</a>
+              <a id="export" class="nav-link" href="#"><i class="far fa-save"></i> Save Topology</a>
               <a class="nav-link" href="#"><i class="far fa-file-pdf"></i> Export to PDF</a>
               <a class="nav-link" href="#"><i class="far fa-envelope"></i>Send to Email</a>
               <a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i></a>
@@ -224,6 +224,20 @@ function draw() {
 }
 
 draw();
+
+document.getElementById("export").addEventListener("click", function() {
+    const container = document.getElementById("topology-chart");
+    const canvas = container.getElementsByTagName("canvas")[0];
+
+    const imgData = canvas.toDataURL("image/png");
+    alert(imgData);
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = "topology.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
 
 function updatePodStatus(node) {
     var url = "{% url 'get_pod_status' 0 %}".replace("0", node.pod_id);
