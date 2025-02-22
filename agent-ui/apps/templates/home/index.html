@@ -78,6 +78,20 @@
                 </div><!-- card-body -->
               </div><!-- card -->
             </div><!-- col -->
+            <div class="col-lg-5 ht-lg-100p">
+              <div class="card card-dashboard-pageviews">
+                <div class="card-header">
+                  <div>
+                    <h6 class="card-title">Pod Events</h6>
+                    <p class="card-text">Events on selected pod.</p>
+                  </div>
+                </div><!-- card-header -->
+                <div class="card-body">
+                    <div name="events" class="" style="min-height: 282px;">
+                    </div><!-- flot-chart-wrapper -->
+                </div><!-- card-body -->
+              </div><!-- card -->
+            </div><!-- col -->
 
           </div><!-- row -->
         </div><!-- kt-content-body -->
@@ -99,122 +113,6 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-<!--<script>
-var nodes = null;
-var edges = null;
-var network = null;
-
-var LENGTH_MAIN = 350,
-    LENGTH_SERVER = 150,
-    LENGTH_SUB = 120,
-    WIDTH_SCALE = 2,
-    GREEN = "green",
-    RED = "#C5000B",
-    ORANGE = "orange",
-    GRAY = "gray",
-    BLACK = "#2B1B17";
-
-function draw() {
-    nodes = [];
-    edges = [];
-
-    var value = 1;
-    var width = WIDTH_SCALE * 2;
-    var color = GRAY;
-    var label = null;
-
-    nodes.push({
-        id: 0,
-        label: "Clusters",
-        group: "clusters",
-        value: 10,
-        shape: "image",
-        image: "/static/assets/img/logo.png"
-    });
-
-    {% for cluster in clusters %}
-    {% with forloop.counter as id %}
-    nodes.push({
-        id: {{ id }},
-        label: "{{ cluster.id | safe }}",
-        group: "network",
-        value: "{{ cluster.id | safe }}",
-        shape: "image",
-        image: "/static/assets/img/cluster.png"
-    });
-    edges.push({
-        from: 0,
-        to: {{ id }},
-        length: LENGTH_SUB,
-        color: color,
-        fontColor: color,
-        width: width,
-        label: null,
-    })
-    {% for pod in pods %}
-    {% if pod.cluster == cluster %}
-    nodes.push({
-        id: {{ id }}{{ forloop.counter }},
-        group: "host",
-        value: "{{ pod.id | safe }}",
-        shape: "circle",
-        selectEdge: function(obj){alert(obj);},
-    });
-    edges.push({
-        from: {{ id }}{{ forloop.counter }},
-        to: {{ id }},
-        length: LENGTH_SUB,
-        color: color,
-        fontColor: color,
-        width: width,
-        label: null
-    })
-    {% endif %}
-    {% endfor %}
-    {% endwith %}
-    {% endfor %}
-
-    var container = document.getElementById("topology-chart");
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-    var options = {
-        nodes: {
-            scaling: {
-                min: 16,
-                max: 32
-            },
-        },
-        edges: {
-            color: GRAY,
-            smooth: false
-        },
-        physics: {
-            barnesHut: {
-                gravitationalConstant: -30000
-            },
-            stabilization: {
-                iterations: 2500
-            }
-        },
-    };
-
-    network = new vis.Network(container, data, options);
-    network.setOptions({
-        physics: false,
-      nodes: {
-        fixed: {
-          y: true,
-          x: true
-        }
-      }
-    });
-}
-
-draw();
-</script>-->
-
 <script>
 // Constants for colors and layout lengths
 var LENGTH_MAIN = 350,
@@ -227,6 +125,7 @@ var LENGTH_MAIN = 350,
 var nodes = null;
 var edges = null;
 var network = null;
+var currentNode = null;
 
 function draw() {
     // Use vis.DataSet so that we can later update nodes individually
@@ -327,9 +226,6 @@ function draw() {
 draw();
 
 function updatePodStatus(node) {
-    // Construct the URL by using a dummy value (e.g. 0) in the Django URL tag,
-    // then replacing it with the actual node id.
-    // (Ensure that your URL pattern is designed so that the id is in the URL.)
     var url = "{% url 'get_pod_status' 0 %}".replace("0", node.pod_id);
 
     $.ajax({
@@ -337,12 +233,7 @@ function updatePodStatus(node) {
         type: "GET",
         dataType: "json",
         success: function(response) {
-            // Update the node's color to the color returned from the server.
-            // The response is expected to be a JSON object like: { "color": "green" }
-            //node.color = response.color;
-            //node.size = 16;
             nodes.update({id: node.id, color: response.color});
-            //console.log(node);
         },
         error: function(xhr, status, error) {
             console.error("Error fetching pod status for node " + node.id + ":", error);
@@ -350,9 +241,27 @@ function updatePodStatus(node) {
     });
 }
 
-// Function to update all pod nodes (assuming they have a "pod_id" property)
+function fetchEvents() {
+    if (!currentNode) {
+        return;
+    }
+
+    var url = "{% url 'get_pod_events' 0 %}".replace("0", currentNode.pod_id);
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "html",
+        success: function(response) {
+            $('[name="events"]').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching pod events for node " + currentNode.id + ":", error);
+        }
+    });
+}
+
 function updateAllPodsStatus() {
-    // Get all nodes from the DataSet (vis.js)
     nodes.get().forEach(function(node) {
         if (node.pod_id) {
             updatePodStatus(node);
@@ -360,8 +269,20 @@ function updateAllPodsStatus() {
     });
 }
 
-// Call updateAllPodsStatus periodically, e.g., every 5 seconds.
-setInterval(updateAllPodsStatus, 5000);
+network.on("click", function (params) {
+    var nodeID = params['nodes']['0'];
+    var node = nodes.get(nodeID);
+
+    if (node) {
+        if (node.pod_id) {
+            currentNode = node;
+            fetchEvents();
+        }
+    }
+});
+
+setInterval(updateAllPodsStatus, 2000);
+setInterval(fetchEvents, 3000);
 </script>
 
 {% endblock javascripts %}

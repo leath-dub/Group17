@@ -8,6 +8,8 @@ env = environ.Env(
     DEBUG=(bool, True)
 )
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Cluster configuration zone
 AGENT_API_HOST = os.environ.get('AGENT_API_HOST', 'localhost')
 AGENT_API_PORT = os.environ.get('AGENT_API_PORT', 4040)

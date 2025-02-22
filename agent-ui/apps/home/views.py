@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 
 
-from .models import Cluster, Pod
+from .models import Cluster, Pod, Event
 
 
 @login_required(login_url="/login/")
@@ -21,6 +21,22 @@ def index(request):
     }
 
     html_template = loader.get_template('home/index.html')
+    return HttpResponse(
+        html_template.render(context, request))
+
+
+@login_required(login_url="/login/")
+def get_pod_events(request, pod_id):
+    pod = get_object_or_404(Pod, id=pod_id)
+    events = Event.objects.filter(pod=pod)
+
+    context = {
+        'pod': pod,
+        'events': events,
+        'event_count': events.count(),
+    }
+
+    html_template = loader.get_template('includes/events.html')
     return HttpResponse(
         html_template.render(context, request))
 

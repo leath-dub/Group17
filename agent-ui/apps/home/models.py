@@ -29,3 +29,24 @@ class Pod(models.Model):
     )
     status = models.CharField(
         choices=POD_STATUS, max_length=10, default=ALIVE)
+
+
+
+class Event(models.Model):
+    FAIL = 'Failed'
+    SUCCESS = 'Success'
+    PENDING = 'Pending'
+
+    EVENT_STATUS = [
+        (FAIL, FAIL),
+        (SUCCESS, SUCCESS),
+        (PENDING, PENDING)
+    ]
+
+    pod = models.ForeignKey(
+        Pod,
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        choices=EVENT_STATUS, max_length=10, default=PENDING)
+    name = models.CharField(max_length=255)

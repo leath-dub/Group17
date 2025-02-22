@@ -11,6 +11,7 @@ urlpatterns = [
 
     # Chacking PODs
     path('get_pod_status/<int:pod_id>/', views.get_pod_status, name='get_pod_status'),
+    path('get_pod_events/<int:pod_id>/', views.get_pod_events, name='get_pod_events'),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
