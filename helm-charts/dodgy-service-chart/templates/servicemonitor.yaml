@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-monitor
+  namespace: monitoring # Needs to go into monitoring namespace to be picked up
+  labels:
+    release: agent-chart
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  endpoints:
+    {{- range .Values.service.ports }}
+    {{- if eq .name "dodgy-metrics" }}
+    - port: {{ .name }}
+      interval: {{ $.Values.scrapeInterval }}
+    {{- end }}
+    {{- end }}
+  namespaceSelector: # Look in default namespace
+    matchNames:
+      - default
+
