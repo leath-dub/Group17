@@ -1,0 +1,76 @@
+# Ignore Helm dependency charts (when `helm dependency update` is run)
+charts/
+*.tgz
+
+# Ignore Helm release state files
+.release
+.helmignore
+helmfile.lock
+
+# Ignore Kubernetes Secrets (Sensitive data)
+secrets.yaml
+secrets/*.yaml
+
+# Ignore Helm debug & template output
+helm-debug.yaml
+helm-template-output.yaml
+
+# Ignore Kubernetes configuration files (if using local kubeconfigs)
+.kube/
+kubectl.kubeconfig
+
+# Ignore generated Kubernetes manifests (if using `kubectl apply -f` manually)
+*.manifest.yaml
+*.out.yaml
+
+# Ignore temporary build artifacts
+tmp/
+build/
+dist/
+
+# Ignore environment-specific Helm values (override files)
+values-*.yaml
+
+# Ignore logs and temp files
+*.log
+*.swp
+*.bak
+.DS_Store
+
+# Ignore sensitive environment variables and secrets
+.env
+.envrc
+.env.local
+.env.*.local
+
+# Ignore Terraform (if used with Kubernetes)
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Ignore Docker artifacts (if using Docker with Kubernetes)
+.dockerignore
+.docker/
+docker-compose.override.yml
+
+# Ignore VSCode/JetBrains IDE files
+.vscode/
+.idea/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignore Node.js dependencies (if using Helm with JavaScript-based tooling)
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Ignore Python virtual environments (if using Python scripts for Helm/K8s automation)
+venv/
+__pycache__/
+*.pyc
+

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: agent-chart
-description: A Helm chart for Kubernetes
+description: A chart that spins up an SRE agent along with the prometheus monitoring stack
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -22,3 +22,9 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: "69.0.0"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: monitoring-stack.enabled # Only uses this dependency if prometheus.enabled is true in values.yaml
