@@ -63,5 +63,4 @@ def main() -> None:
         print(call)
 
 if __name__ == "__main__":
-
     main()
