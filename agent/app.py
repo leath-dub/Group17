@@ -1,14 +1,18 @@
-# SAMPLE PYTHON HTTP SERVER STUBBING FOR HELM SETUP
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from flask import Flask, make_response, request
 
-class MyHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(b"Hello from my minimal Python HTTP server!")
+import agent
 
-server_address = ("0.0.0.0", 8080)
-httpd = HTTPServer(server_address, MyHandler)
-print("Serving on port 8080...")
-httpd.serve_forever()
+app = Flask(__name__)
+
+@app.route("/alert", methods=["POST"])
+def alert():
+    if request.content_type != "application/json":
+        return "Content-Type must be application/json", 400
+
+    data = request.get_json()
+    agent.forward_alert(data)
+
+    return "", 200
+
+if __name__ == "__main__":
+    app.run()

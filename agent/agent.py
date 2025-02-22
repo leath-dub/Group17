@@ -1,8 +1,33 @@
 import vars
+import json
 
 from openai import OpenAI
 
-def main() -> None:
+class Task:
+    id: int = 0
+
+    def __init__(self, kind):
+        Task.id += 1
+        self.id = id
+        self.kind = kind
+
+    def start(self) -> None:
+        # "DJANGO:xxx/task/start"
+        pass
+
+    def finish(self, data) -> None:
+        # "DJANGO:xxx/task/finish"
+        pass
+
+    def fail(self) -> None:
+        # "DJANGO:xxx/task/fail"
+        pass
+
+async def forward_alert(data) -> None:
+    handle_alert = Task("handle-alert")
+
+    handle_alert.start()
+
     client = OpenAI()
     tools = [{
         "type": "function",
@@ -76,16 +101,26 @@ def main() -> None:
     }
     """
 
+    informing_llm = Task("informing-llm")
+
+    informing_llm.start()
     completion = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "system", "content": vars.SYSTEM_MESSAGE}, {"role": "user", "content": example_json}],
         tools=tools
     )
+    informing_llm.finish()
 
-    if len(completion.choices) > 0:
+    automatic_triage = Task("automatic-triage")
+
+    automatic_triage.start()
+    if len(completion.choices) > 0 and completion.choices[0].message.tool_calls != None:
+        actions = []
         for call in completion.choices[0].message.tool_calls:
             assert(call.type == "function")
-            print(call)
+            actions.append(call.function.name)
+        automatic_triage.finish(json.dumps(actions))
+    else:
+        automatic_triage.fail()
 
-if __name__ == "__main__":
-    main()
+    handle_alert.finish()
