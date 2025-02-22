@@ -1,16 +1,7 @@
-
-FROM python:3.9-slim
-
-RUN apt-get update && apt-get install -y stress-ng && rm -rf /var/lib/apt/lists/*
-
+FROM python:3.12-slim
 WORKDIR /app
-
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app.py .
-COPY static ./static
-
-EXPOSE 5000
-
+COPY . .
+EXPOSE 8080 8000
 CMD ["python", "app.py"]

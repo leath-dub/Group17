@@ -1,59 +1,84 @@
+from flask import Flask, jsonify
+from prometheus_client import start_http_server, Gauge
 import random
 import time
-import subprocess
-from flask import Flask, request, jsonify
+import threading
+import os
 
-app = Flask(__name__, static_folder="static")
+# Flask App for Overload Control
+app = Flask(__name__)
 
+# Metrics
+cpu_usage = Gauge('app_cpu_usage', 'Current CPU usage percentage')
+memory_usage = Gauge('app_memory_usage', 'Current memory usage in MB')
+disk_usage = Gauge('app_disk_usage', 'Current disk usage percentage')
+request_latency = Gauge('app_request_latency_seconds', 'Fake request latency')
 
-@app.route("/stress", methods=["POST", "GET"])
-def stress_container():
-    # stress test using stress-ng.
+# Default healthy metric ranges (can be overridden)
+CPU_RANGE = (10, 50)  # Healthy CPU usage range
+MEMORY_RANGE = (100, 500)  # Healthy memory usage range (MB)
+DISK_RANGE = (20, 70)  # Healthy disk usage range (%)
+LATENCY_RANGE = (0.1, 0.5)  # Healthy latency range (sec)
 
-    try:
-        # get the info from the request
-        data = request.json or {}  # Handle case where no JSON is sent
+# Overload Flags
+overload_cpu = False
+overload_memory = False
+overload_disk = False
+overload_latency = False
 
-        
-        if data.get("cpu") != None:
-            cpu = str(data.get("cpu"))  
-        else:
-            cpu = "0"
-        if data.get("vm") != None:
-            vm = str(data.get("vm"))  
-        else:
-            vm = "0"
-        if data.get("vm_bytes") != None:
-            vm_bytes = str(data.get("vm_bytes"))  # Default to 256MB
-        else:
-            vm_bytes = "256M"
-        if data.get("timeout") != None:
-            timeout = str(data.get("timeout"))  # Default to 30 seconds
-        else:
-            timeout = "30s"
+# Function to generate random healthy metrics
+def generate_metrics():
+    global overload_cpu, overload_memory, overload_disk, overload_latency
+    while True:
+        cpu_usage.set(random.uniform(*CPU_RANGE) if not overload_cpu else random.uniform(80, 100))
+        memory_usage.set(random.uniform(*MEMORY_RANGE) if not overload_memory else random.uniform(900, 1200))
+        disk_usage.set(random.uniform(*DISK_RANGE) if not overload_disk else random.uniform(90, 99))
+        request_latency.set(random.uniform(*LATENCY_RANGE) if not overload_latency else random.uniform(5, 10))
+        time.sleep(5)
 
-        stress_cmd = ["stress-ng", "--timeout", timeout]  # Duration of the stress test
-        if cpu != "0":
-            stress_cmd.extend(["--cpu", cpu])  # Number of CPU stressors
-        if vm != "0":
-            stress_cmd.extend(
-                ["--vm", vm, "--vm-bytes", vm_bytes]
-            )  # Memory stressors and amount
-        subprocess.Popen(stress_cmd)
-        return jsonify(
-            {
-                "message": "Stress test started!",
-                "parameters": {
-                    "cpu": cpu,
-                    "vm": vm,
-                    "vm_bytes": vm_bytes,
-                    "timeout": timeout,
-                },
-            }
-        )
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# Flask routes to trigger overload scenarios
+@app.route("/overload-cpu")
+def overload_cpu_api():
+    global overload_cpu
+    overload_cpu = True
+    return jsonify({"status": "CPU overloaded"}), 200
 
+@app.route("/overload-memory")
+def overload_memory_api():
+    global overload_memory
+    overload_memory = True
+    return jsonify({"status": "Memory overloaded"}), 200
+
+@app.route("/overload-disk")
+def overload_disk_api():
+    global overload_disk
+    overload_disk = True
+    return jsonify({"status": "Disk overloaded"}), 200
+
+@app.route("/overload-latency")
+def overload_latency_api():
+    global overload_latency
+    overload_latency = True
+    return jsonify({"status": "Latency overloaded"}), 200
+
+@app.route("/reset")
+def reset():
+    global overload_cpu, overload_memory, overload_disk, overload_latency
+    overload_cpu = overload_memory = overload_disk = overload_latency = False
+    return jsonify({"status": "All metrics reset to normal"}), 200
+
+@app.route("/")
+def home():
+    return "Fake Metrics Exporter Running!"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    # Start Prometheus Metrics Server
+    start_http_server(8000)
+    
+    # Start background thread for metric generation
+    metric_thread = threading.Thread(target=generate_metrics)
+    metric_thread.daemon = True
+    metric_thread.start()
+
+    # Start Flask App
+    app.run(host="0.0.0.0", port=8080)
