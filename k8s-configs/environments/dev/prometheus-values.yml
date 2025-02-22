@@ -1,0 +1,10 @@
+# Config for monitoring stack
+grafana:
+  enabled: true
+  adminPassword: admin
+
+alertmanager:
+  enabled: true
+
+prometheus:
+  enabled: true
