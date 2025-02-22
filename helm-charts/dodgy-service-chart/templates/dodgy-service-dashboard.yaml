@@ -1,0 +1,199 @@
+{{- if .Values.dodgyServiceDashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-dashboard
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    grafana_dashboard: "1"
+data:
+  dodgy-service-dashboard.json: |-
+    {
+      "annotations": {
+        "list": []
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "type": "gauge",
+          "title": "CPU Usage",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "app_cpu_usage",
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "type": "gauge",
+          "title": "Memory Usage (MB)",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "megabytes",
+              "min": 0,
+              "max": 800,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "value": null,
+                    "color": "green"
+                  },
+                  {
+                    "value": 800,
+                    "color": "red"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": true,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "app_memory_usage",
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          }
+        },
+        {
+          "type": "gauge",
+          "title": "Disk Usage",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "app_disk_usage",
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 8
+          }
+        },
+        {
+          "type": "gauge",
+          "title": "Request Latency (seconds)",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "min": 0,
+              "max": 8,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "value": null,
+                    "color": "green"
+                  },
+                  {
+                    "value": 5,
+                    "color": "red"
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "values": false,
+              "calcs": ["lastNotNull"]
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "app_request_latency_seconds",
+              "format": "time_series",
+              "refId": "A"
+            }
+          ],
+          "datasource": "Prometheus",
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 8
+          }
+        }
+      ],
+      "refresh": "5s",
+      "schemaVersion": 37,
+      "style": "dark",
+      "tags": ["dodgy-service"],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-5m",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "",
+      "title": "Dodgy Service Metrics",
+      "uid": "dodgy-service-dashboard",
+      "version": 1,
+      "weekStart": ""
+    }
+{{- end }}
