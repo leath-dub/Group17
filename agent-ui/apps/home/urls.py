@@ -17,3 +17,7 @@ urlpatterns = [
     re_path(r'^.*\.*', views.pages, name='pages'),
 
 ]
+
+import apps.home.startup as startup
+
+startup.event_listener()

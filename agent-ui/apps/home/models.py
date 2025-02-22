@@ -20,6 +20,8 @@ class Pod(models.Model):
         (DEAD, DEAD),
     ]
 
+
+    name = models.TextField()
     cluster = models.ForeignKey(
         Cluster,
         on_delete=models.CASCADE
@@ -29,8 +31,6 @@ class Pod(models.Model):
     )
     status = models.CharField(
         choices=POD_STATUS, max_length=10, default=ALIVE)
-
-
 
 class Event(models.Model):
     FAIL = 'Failed'
@@ -47,6 +47,7 @@ class Event(models.Model):
         Pod,
         on_delete=models.CASCADE
     )
-    status = models.CharField(
-        choices=EVENT_STATUS, max_length=10, default=PENDING)
-    name = models.CharField(max_length=255)
+    status = models.CharField(choices=EVENT_STATUS, max_length=10, default=PENDING)
+    kind = models.CharField(max_length=255)
+    event_id = models.IntegerField(unique=True)
+    reply = models.TextField(null=True)
