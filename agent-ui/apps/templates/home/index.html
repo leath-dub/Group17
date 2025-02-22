@@ -37,7 +37,6 @@
                   <h6>All Categories</h6>
                 </div><!-- media-body -->
               </div><!-- media -->
-              <a href="" class="btn btn-purple">Refresh</a>
             </div>
           </div><!-- kt-dashboard-one-title -->
 
@@ -48,8 +47,7 @@
 
             <nav class="nav">
               <a id="export" class="nav-link" href="#"><i class="far fa-save"></i> Save Topology</a>
-              <a class="nav-link" href="#"><i class="far fa-file-pdf"></i> Export to PDF</a>
-              <a class="nav-link" href="#"><i class="far fa-envelope"></i>Send to Email</a>
+              <a id="export-pdf" class="nav-link" href="#"><i class="far fa-file-pdf"></i> Export to PDF</a>
               <a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i></a>
             </nav>
           </div>
@@ -72,7 +70,7 @@
                   </div>
                 </div><!-- card-header -->
                 <div class="card-body">
-                  <div class="" style="min-height: 282px;">
+                  <div class="" style="min-height: 300px;">
                     <div style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;" id="topology-chart"></div>
                   </div><!-- flot-chart-wrapper -->
                 </div><!-- card-body -->
@@ -87,7 +85,7 @@
                   </div>
                 </div><!-- card-header -->
                 <div class="card-body">
-                    <div name="events" class="" style="min-height: 282px;">
+                    <div name="events" class="" style="min-height: 300px;">
                     </div><!-- flot-chart-wrapper -->
                 </div><!-- card-body -->
               </div><!-- card -->
@@ -107,6 +105,7 @@
     <script src="{{ ASSETS_ROOT }}/lib/jquery.flot/jquery.flot.resize.js"></script>
     <script src="{{ ASSETS_ROOT }}/lib/chart.js/Chart.bundle.min.js"></script>
     <script src="{{ ASSETS_ROOT }}/lib/peity/jquery.peity.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 {% endblock plugin_javascripts %}
 
@@ -228,15 +227,29 @@ draw();
 document.getElementById("export").addEventListener("click", function() {
     const container = document.getElementById("topology-chart");
     const canvas = container.getElementsByTagName("canvas")[0];
-
     const imgData = canvas.toDataURL("image/png");
-    alert(imgData);
     const link = document.createElement("a");
+
     link.href = imgData;
     link.download = "topology.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+});
+
+document.getElementById("export-pdf").addEventListener("click", function() {
+    const container = document.getElementById("topology-chart");
+    const canvas = container.getElementsByTagName("canvas")[0];
+    const imgData = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+
+    const pdf = new jspdf.jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: [canvas.width, canvas.height]
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save("topology.pdf");
 });
 
 function updatePodStatus(node) {
