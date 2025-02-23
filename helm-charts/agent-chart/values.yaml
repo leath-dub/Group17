@@ -14,6 +14,8 @@ kube-prometheus-stack:
 
 replicaCount: 1
 
+replicaCountUI: 1
+
 image:
   repository: agent-container
   # This sets the pull policy for images.
@@ -24,6 +26,15 @@ image:
 service:
   type: ClusterIP
   containerPort: 8080
+
+image_ui:
+  repository: agent-ui-container
+  pullPolicy: Never
+  tag: "latest"
+
+service_ui:
+  type: CluserIP
+  containerPort: 5005
 
 # Not using yet - for future anticipation
 resources:
