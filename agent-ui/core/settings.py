@@ -33,7 +33,7 @@ ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
 # load production server from .env
 ALLOWED_HOSTS        = ['localhost', 'localhost:85', '127.0.0.1', env('SERVER', default='127.0.0.1'), 'agent-chart-agent-ui-service.monitoring.svc.cluster.local' ]
 CSRF_TRUSTED_ORIGINS = [
-        'http://agent-chart-agent-ui-service.monitoring.svc.cluster.local:5005', 'http://localhost:85', 'http://127.0.0.1', 'https://' + env('SERVER', default='127.0.0.1') ]
+        'http://agent-chart-agent-ui-service.monitoring.svc.cluster.local', 'http://localhost:85', 'http://127.0.0.1', 'https://' + env('SERVER', default='127.0.0.1') ]
 
 # Application definition
 
