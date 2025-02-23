@@ -48,10 +48,10 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         results[0].save()
 
         if reply != None:
-            event = Event(status=status, pod=results[0], event_id=event_id, kind=kind, reply=reply)
+            event = Event(status=status, pod=results[0], event_id=event_id, name=kind, reply=reply)
             event.save()
         else:
-            event = Event(status=status, pod=results[0], event_id=event_id, kind=kind)
+            event = Event(status=status, pod=results[0], event_id=event_id, name=kind)
             event.save()
 
         self.send_response(200)
