@@ -34,7 +34,8 @@ image_ui:
 
 service_ui:
   type: CluserIP
-  containerPort: 5005
+  containerPortUI: 5005
+  containerPortAPI: 4321
 
 # Not using yet - for future anticipation
 resources:

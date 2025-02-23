@@ -6,6 +6,9 @@ spec:
   selector:
     app: agent-ui
   ports:
-    - name: ui-service-http
+    - name: ui-exposed-http
       port: 80
       targetPort: ui-http
+    - name: api-exposed-http
+      port: 8000
+      targetPort: api-http
