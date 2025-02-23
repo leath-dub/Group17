@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-chart-agent-ui
+spec:
+  replicas: {{ .Values.replicaCountUI }}
+  selector:
+    matchLabels:
+      app: agent-ui
+  template:
+    metadata:
+      labels:
+        app: agent-ui
+    spec:
+      containers:
+        - name: agent-ui
+          image: "{{ .Values.image_ui.repository }}:{{ .Values.image_ui.tag }}"
+          imagePullPolicy: "{{ .Values.image_ui.pullPolicy }}"
+          ports:
+            - containerPort: {{ .Values.service_ui.containerPort }}
+              name: ui-http
