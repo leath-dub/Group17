@@ -9,7 +9,7 @@ spec:
   groups:
   - name: dodgy-service.rules
     rules:
-    - alert: PodHighMemoryUsage
+    - alert: HighMemoryUsage
       expr: sum by (pod) (app_memory_usage) > 800
       for: 10s
       labels:
@@ -18,3 +18,30 @@ spec:
       annotations:
         summary: "High memory usage on pod {{ `{{ $labels.pod }}` }}"
         description: "Pod {{ `{{ $labels.pod }}` }} has memory usage above 800 MB for over 10s."
+    - alert: HighCPUUsage
+      expr: sum by (pod) (app_cpu_usage) > 80
+      for: 10s
+      labels:
+        severity: severe
+        namespace: monitoring
+      annotations:
+        summary: "High CPU utilisation on pod {{ `{{ $labels.pod }}`}}"
+        description: "Pod {{ `{{ $labels.pod }}`}} has CPU utilisation above 80% for over 10s"
+    - alert: HighDiskUsage
+      expr: sum by (pod) (app_disk_usage) > 90
+      for: 10s
+      labels:
+        severity: severe
+        namespace: monitoring
+      annotations:
+        summary: "High disk usage on pod {{ `{{ $labels.pod }}`}}"
+        description: "Pod {{ `{{ $labels.pod }}`}} has disk usage above 90% for over 10s"
+    - alert: HighLatency
+      expr: sum by (pod) (app_request_latency_seconds) > 5
+      for: 10s
+      labels:
+        severity: severe
+        namespace: monitoring
+      annotations:
+        summary: "High latency on pod {{ `{{ $labels.pod }}`}}"
+        description: "Pod {{ `{{ $labels.pod }}`}} has latency above 5s for over 10s"
