@@ -10,7 +10,7 @@ type Alert = {
     pod: string
     event: string // <metric><op><value>, e.g. cpu>10%
   }
-  pods: []{
+  pods: [] {
     id: string
     metrics: {
       cpu: string // percentage

@@ -6,7 +6,7 @@ import threading
 
 from openai import OpenAI
 
-ui_host = "agent-chart-agent-ui-service.monitoring.svc.cluster.local:80"
+UI_HOST = "agent-chart-agent-ui-service.monitoring.svc.cluster.local:80"
 
 class Event:
     id = 0
@@ -17,6 +17,8 @@ class Event:
             Event.id += 1
             self.id = Event.id
         self.kind = kind
+        self.failed = False
+        self.finish_payload = None
 
     def as_json(self):
         print(self.kind, self.id)
@@ -28,10 +30,10 @@ class Event:
         client.request("POST", "/task/create", payload, {"Content-Type": "application/json"})
         # TODO handle repsonse from server?
 
-    def __exit__(self) -> None:
+    def __exit__(self, *args) -> None:
         if self.failed:
             client = http.client.HTTPConnection(UI_HOST)
-            payload = json.as_json()
+            payload = self.as_json()
             client.request("POST", "/task/fail", payload, {"Content-Type": "application/json"})
             # TODO handle repsonse from server?
             return
@@ -42,7 +44,7 @@ class Event:
             # TODO handle repsonse from server?
         else:
             client = http.client.HTTPConnection(UI_HOST)
-            payload = json.as_json()
+            payload = self.as_json()
             client.request("POST", "/task/finish", payload, {"Content-Type": "application/json"})
             # TODO handle repsonse from server?
 
@@ -50,10 +52,10 @@ class Event:
         self.finish_payload = payload
 
     def set_fail(self) -> None:
-        self.failed = true
+        self.failed = True
 
 def forward_alert(data) -> None:
-    print("Hello from thread!")
+    print(data)
 
     with Event("handling-alert") as handle_alert:
         client = OpenAI()

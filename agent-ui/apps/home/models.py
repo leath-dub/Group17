@@ -37,6 +37,6 @@ class Event(models.Model):
 
     pod = models.ForeignKey(Pod, on_delete=models.CASCADE, null=True)
     status = models.CharField(choices=EVENT_STATUS, max_length=10, default=PENDING)
-    kind = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     event_id = models.IntegerField(unique=True, null=True)
     reply = models.TextField(null=True)

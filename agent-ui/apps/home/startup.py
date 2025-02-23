@@ -55,7 +55,7 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
             )
             event.save()
         else:
-            event = Event(status=status, pod=results[0], event_id=event_id, kind=kind)
+            event = Event(status=status, pod=results[0], event_id=event_id, name=kind)
             event.save()
 
         self.send_response(200)
