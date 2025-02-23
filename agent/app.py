@@ -5,8 +5,6 @@ import threading
 
 app = Flask(__name__)
 
-
-
 @app.route("/alert", methods=["POST"])
 def alert():
     print("AHHHH PROD IS DOWN :(", flush=True)

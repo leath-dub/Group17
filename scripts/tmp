@@ -1,3 +1,48 @@
+{
+'receiver': 'monitoring/custom-alertmanager/webhook_receiver',
+'status': 'firing',
+'alerts': [
+	{
+		'status': 'firing',
+		'labels':
+			{
+				'alertname': 'HighMemoryUsage',
+				'namespace': 'monitoring',
+				'pod': 'dodgy-service-chart-7fdc786d7f-ppfpj',
+				'prometheus': 'monitoring/agent-chart-kube-prometheu-prometheus',
+				'severity': 'severe'
+			},
+		'annotations':
+			{
+				'description': 'Pod dodgy-service-chart-7fdc786d7f-ppfpj has memory usage above 800 MB for over 10s.',
+				'summary': 'High memory usage on pod dodgy-service-chart-7fdc786d7f-ppfpj'
+			},
+		'startsAt': '2025-02-23T10:18:32.953Z',
+		'endsAt': '0001-01-01T00:00:00Z',
+		'generatorURL': 'http://agent-chart-kube-prometheu-prometheus.monitoring:9090/graph?g0.expr=sum+by+%28pod%29+%28app_memory_usage%29+%3E+800&g0.tab=1',
+		'fingerprint': 'a4b5b71dba47519f'
+	}
+],
+'groupLabels': {'namespace': 'monitoring'},
+'commonLabels': {
+	'alertname': 'HighMemoryUsage',
+	'namespace': 'monitoring',
+	'pod': 'dodgy-service-chart-7fdc786d7f-ppfpj',
+	'prometheus': 'monitoring/agent-chart-kube-prometheu-prometheus',
+	'severity': 'severe'
+},
+'commonAnnotations':
+	{
+		'description': 'Pod dodgy-service-chart-7fdc786d7f-ppfpj has memory usage above 800 MB for over 10s.',
+		'summary': 'High memory usage on pod dodgy-service-chart-7fdc786d7f-ppfpj'
+	},
+'externalURL': 'http://agent-chart-kube-prometheu-alertmanager.monitoring:9093',
+'version': '4',
+'groupKey': '{}/{namespace="monitoring"}/{severity="severe"}:{namespace="monitoring"}', 'truncatedAlerts': 0}
+
+
+http://agent-chart-kube-prometheu-prometheus.monitoring.svc.cluster.local:9090
+
 import vars
 import json
 import http.client
@@ -184,3 +229,4 @@ def forward_alert(data) -> None:
                 automatic_triage.set_payload(json.dumps(actions))
             else:
                 automatic_triage.set_fail()
+

@@ -45,3 +45,13 @@ spec:
       annotations:
         summary: "High latency on pod {{ `{{ $labels.pod }}`}}"
         description: "Pod {{ `{{ $labels.pod }}`}} has latency above 5s for over 10s"
+    - alert: PodDown
+      expr: absent(kube_pod_status_ready{pod=~".*"}) or sum by (pod) (kube_pod_status_ready{condition="true"}) == 0
+      for: 10s
+      labels:
+        severity: critical
+        namespace: monitoring
+      annotations:
+        summary: "Pod {{ `{{ $labels.pod }}` }} is down"
+        description: "Pod {{ `{{ $labels.pod }}` }} has been down for at least 30 seconds."
+
