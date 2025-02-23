@@ -8,31 +8,39 @@ from openai import OpenAI
 from kubernetes import client, config
 import requests
 
-UI_HOST = "http://agent-chart-agent-ui-service.monitoring.svc.cluster.local:80"
-PROM_HOST = "http://agent-chart-kube-prometheu-prometheus.monitoring.svc.cluster.local:9090"
+UI_HOST = "http://agent-chart-agent-ui-service.monitoring.svc.cluster.local:8000"
+PROM_HOST = (
+    "http://agent-chart-kube-prometheu-prometheus.monitoring.svc.cluster.local:9090"
+)
+
 
 def load_kube():
     config.load_kube_config()
     return client.CoreV1Api()
 
+
 def get_metrics(podname, alert):
-    query = ""
-    if (alert == "HighMemoryUsage"):
-        query = f"app_memory_usage{{pod='{podname}'}}"
-    elif (alert == "HighCPUUsage"):
-        query = f"app_cpu_usage{{pod='{podname}'}}"
-    elif (alert == "HighDiskUsage"):
-        query = f"app_disk_usage{{pod='{podname}'}}"
-    elif (alert == "HighLatency"):
-        query = f"app_request_latency_seconds{{pod='{podname}'}}"
+    queries = [
+        f"app_memory_usage{{pod='{podname}'}}",
+        f"app_cpu_usage{{pod='{podname}'}}",
+        f"app_disk_usage{{pod='{podname}'}}",
+        f"app_request_latency_seconds{{pod='{podname}'}}",
+    ]
 
-    response = requests.get(f"{PROM_HOST}/api/v1/query", params={'query': query});
-    data = response.json()
+    collected_metrics = []
 
-    print(f"PROM RESPONSE:\n{data}", flush=True)
+    for query in queries:
+        response = requests.get(f"{PROM_HOST}/api/v1/query", params={"query": query})
+        data = response.json()
+        metric = data['data']['result'][0]['metric']['__name__']
+        value = data['data']['result'][0]['value'][1]
+        collected_metrics.append((metric, value))
+        print(f"PROM RESPONSE:\n{data}", flush=True)
 
+    print(f"COLLECTED METRICS: {collected_metrics}", flush=True)
 
-    
+    return collected_metrics
+
 
 class Event:
     id = 0
@@ -52,25 +60,40 @@ class Event:
     def __enter__(self) -> None:
         client = http.client.HTTPConnection(UI_HOST)
         payload = self.as_json()
-        client.request("POST", "/event/create", payload, {"Content-Type": "application/json"})
+        client.request(
+            "POST", "/event/create", payload, {"Content-Type": "application/json"}
+        )
+        client.close()
         # TODO handle repsonse from server?
 
     def __exit__(self, *args) -> None:
         if self.failed:
             client = http.client.HTTPConnection(UI_HOST)
             payload = self.as_json()
-            client.request("POST", "/event/fail", payload, {"Content-Type": "application/json"})
+            client.request(
+                "POST", "/event/fail", payload, {"Content-Type": "application/json"}
+            )
+            client.close()
             # TODO handle repsonse from server?
             return
 
         if self.finish_payload:
             client = http.client.HTTPConnection(UI_HOST)
-            client.request("POST", "/event/finish", self.finish_payload, {"Content-Type": "application/json"})
+            client.request(
+                "POST",
+                "/event/finish",
+                self.finish_payload,
+                {"Content-Type": "application/json"},
+            )
+            client.close()
             # TODO handle repsonse from server?
         else:
             client = http.client.HTTPConnection(UI_HOST)
             payload = self.as_json()
-            client.request("POST", "/event/finish", payload, {"Content-Type": "application/json"})
+            client.request(
+                "POST", "/event/finish", payload, {"Content-Type": "application/json"}
+            )
+            client.close()
             # TODO handle repsonse from server?
 
     def set_finish_payload(self, payload) -> None:
@@ -79,64 +102,66 @@ class Event:
     def set_fail(self) -> None:
         self.failed = True
 
-def forward_alert(data) -> None:
 
+def forward_alert(data) -> None:
     print(data, flush=True)
 
-    print(f"Alert: {data["alerts"][0]["labels"]["alertname"]}", flush=True)
-    print(f"Pod: {data["alerts"][0]["labels"]["pod"]}", flush=True)
-    print(f"Severity: {data["alerts"][0]["labels"]["severity"]}", flush=True)
+    print(f"Alert: {data['alerts'][0]['labels']['alertname']}", flush=True)
+    print(f"Pod: {data['alerts'][0]['labels']['pod']}", flush=True)
+    print(f"Severity: {data['alerts'][0]['labels']['severity']}", flush=True)
 
     alert = data["alerts"][0]["labels"]["alertname"]
     pod = data["alerts"][0]["labels"]["pod"]
     severity = data["alerts"][0]["labels"]["severity"]
-    
-    get_metrics(pod, alert)
+
+    [(mem_tag, mem_met), (cpu_tag, cpu_met), (disk_tag, disk_met), (laten_tag, laten_met)] = get_metrics(pod, alert)
 
     with Event("handling-alert") as handle_alert:
         client = OpenAI()
-        tools = [{
-            "type": "function",
-            "function": {
-                "name": "restart",
-                "description": "Restart a pod given the pod name id",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                          "type": "string",
-                          "description": "The human readable id for the pod"
-                      }
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "restart",
+                    "description": "Restart a pod given the pod name id",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "The human readable id for the pod",
+                            }
+                        },
+                        "required": ["id"],
+                        "additionalProperties": False,
                     },
-                    "required": ["id"],
-                    "additionalProperties": False
+                    "strict": True,
                 },
-                "strict": True
-            }
-        }, {
-            "type": "function",
-            "function": {
-                "name": "set_replicas",
-                "description": "Set the number of replicas of pod",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                          "type": "string",
-                          "description": "The human readable id for the pod"
-                      },
-                      "n": {
-                          "type": "number",
-                          "description": "The number of instances of the pod"
-                      }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "set_replicas",
+                    "description": "Set the number of replicas of pod",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "The human readable id for the pod",
+                            },
+                            "n": {
+                                "type": "number",
+                                "description": "The number of instances of the pod",
+                            },
+                        },
+                        "required": ["id", "n"],
+                        "additionalProperties": False,
                     },
-                    "required": ["id", "n"],
-                    "additionalProperties": False
+                    "strict": True,
                 },
-                "strict": True
-            }
-        }]
-
+            },
+        ]
 
         json_to_llm = f"""
         {{
@@ -145,40 +170,35 @@ def forward_alert(data) -> None:
             "pod": "{pod}",
             "severity": "{severity}"
           }},
+          "metrics": {{
+              {cpu_tag}: {cpu_met},
+              {mem_tag}: {mem_met},
+              {disk_tag}: {disk_met},
+              {laten_tag}: {laten_met}
+          }}
         }}
         """
 
-          # "pods": [
-          #   {{
-          #       "id": "water-duck",
-          #       "metrics": {{
-          #         "cpu": "10%",
-          #         "memory": "50M",
-          #         "replicas": 1
-          #       }}
-          #   }},
-          #   {{
-          #       "id": "grand-major",
-          #       "metrics": {{
-          #         "cpu": "80%",
-          #         "memory": "5K",
-          #         "replicas": 20
-          #       }}
-          #   }}
-          # ],
+        print(json_to_llm, flush=True)
 
         with Event("informing-llm") as informing_llm:
             completion = client.chat.completions.create(
                 model="gpt-4o",
-                messages=[{"role": "system", "content": vars.SYSTEM_MESSAGE}, {"role": "user", "content": example_json}],
-                tools=tools
+                messages=[
+                    {"role": "system", "content": vars.SYSTEM_MESSAGE},
+                    {"role": "user", "content": json_to_llm},
+                ],
+                tools=tools,
             )
 
         with Event("automatic-triage") as automatic_triage:
-            if len(completion.choices) > 0 and completion.choices[0].message.tool_calls != None:
+            if (
+                len(completion.choices) > 0
+                and completion.choices[0].message.tool_calls != None
+            ):
                 actions = []
                 for call in completion.choices[0].message.tool_calls:
-                    assert(call.type == "function")
+                    assert call.type == "function"
                     actions.append(call.function.name)
                 automatic_triage.set_payload(json.dumps(actions))
             else:
