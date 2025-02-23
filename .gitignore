@@ -78,3 +78,4 @@ venv/
 __pycache__/
 *.pyc
 
+agent/openai_test.py
