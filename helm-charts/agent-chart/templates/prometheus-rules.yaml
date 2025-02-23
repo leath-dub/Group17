@@ -4,6 +4,7 @@ metadata:
   name: dodgy-service-alerts
   labels:
     release: {{ .Release.Name }} # Must match Prometheus instance label
+  namespace: monitoring
 spec:
   groups:
   - name: dodgy-service.rules
@@ -13,6 +14,7 @@ spec:
       for: 10s
       labels:
         severity: severe
+        namespace: monitoring
       annotations:
         summary: "High memory usage on pod {{ `{{ $labels.pod }}` }}"
         description: "Pod {{ `{{ $labels.pod }}` }} has memory usage above 800 MB for over 10s."

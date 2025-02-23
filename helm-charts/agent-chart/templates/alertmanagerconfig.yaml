@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: custom-alertmanager
 spec:
   route:
-    receiver: default
+    receiver: 'webhook_receiver'
     routes:
       - matchers:
         - name: severity
@@ -17,7 +17,6 @@ spec:
         groupInterval: 30s
         repeatInterval: 1m
   receivers:
-    - name: default
-    - name: webhook_receiver
+    - name: 'webhook_receiver'
       webhookConfigs:
-        - url: "http://agent-chart-agent-service.default.svc.cluster.local:80/alert"
+        - url: "http://agent-chart-agent-service.monitoring.svc.cluster.local:80/alert"
