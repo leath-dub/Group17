@@ -47,31 +47,30 @@ class Event:
         self.finish_payload = None
 
     def as_json(self):
-        print(self.kind, self.id)
         return json.dumps({"id": self.id, "kind": self.kind})
 
     def __enter__(self) -> None:
         client = http.client.HTTPConnection(UI_HOST)
         payload = self.as_json()
-        client.request("POST", "/task/create", payload, {"Content-Type": "application/json"})
+        client.request("POST", "/event/create", payload, {"Content-Type": "application/json"})
         # TODO handle repsonse from server?
 
     def __exit__(self, *args) -> None:
         if self.failed:
             client = http.client.HTTPConnection(UI_HOST)
             payload = self.as_json()
-            client.request("POST", "/task/fail", payload, {"Content-Type": "application/json"})
+            client.request("POST", "/event/fail", payload, {"Content-Type": "application/json"})
             # TODO handle repsonse from server?
             return
 
         if self.finish_payload:
             client = http.client.HTTPConnection(UI_HOST)
-            client.request("POST", "/task/finish", self.finish_payload, {"Content-Type": "application/json"})
+            client.request("POST", "/event/finish", self.finish_payload, {"Content-Type": "application/json"})
             # TODO handle repsonse from server?
         else:
             client = http.client.HTTPConnection(UI_HOST)
             payload = self.as_json()
-            client.request("POST", "/task/finish", payload, {"Content-Type": "application/json"})
+            client.request("POST", "/event/finish", payload, {"Content-Type": "application/json"})
             # TODO handle repsonse from server?
 
     def set_finish_payload(self, payload) -> None:
