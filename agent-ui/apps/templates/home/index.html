@@ -1,111 +1,156 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} Dashboard {% endblock %} 
+{% extends "layouts/base.html" %} {% block title %} Dashboard {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
 
-{% block content %}
+<!-- vendor css -->
+<link
+	href="{{ ASSETS_ROOT }}/lib/fontawesome-free/css/all.min.css"
+	rel="stylesheet"
+/>
+<link
+	href="{{ ASSETS_ROOT }}/lib/ionicons/css/ionicons.min.css"
+	rel="stylesheet"
+/>
+<link
+	href="{{ ASSETS_ROOT }}/lib/typicons.font/typicons.css"
+	rel="stylesheet"
+/>
+<link
+	href="{{ ASSETS_ROOT }}/lib/flag-icon-css/css/flag-icon.min.css"
+	rel="stylesheet"
+/>
 
-    <!-- vendor css -->
-    <link href="{{ ASSETS_ROOT }}/lib/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="{{ ASSETS_ROOT }}/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
-    <link href="{{ ASSETS_ROOT }}/lib/typicons.font/typicons.css" rel="stylesheet">
-    <link href="{{ ASSETS_ROOT }}/lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet">
+<!-- Katana CSS -->
+<link rel="stylesheet" href="{{ ASSETS_ROOT }}/css/Katana.css" />
 
-    <!-- Katana CSS -->
-    <link rel="stylesheet" href="{{ ASSETS_ROOT }}/css/Katana.css">
+<div class="kt-content kt-content-dashboard">
+	<div class="container">
+		<div class="kt-content-body">
+			<div class="kt-dashboard-one-title">
+				<div>
+					<h2 class="kt-dashboard-title">Hi, welcome back!</h2>
+					<p class="kt-dashboard-text">Katana is ready to take actions!</p>
+				</div>
+				<div class="kt-content-header-right">
+					<div class="media">
+						<div class="media-body">
+							<label>Todays Date</label>
+							<h6>{% now "jS F Y H:i" %}</h6>
+						</div>
+						<!-- media-body -->
+					</div>
+					<!-- media -->
+					<div class="media">
+						<div class="media-body">
+							<label>Event Category</label>
+							<h6>All Categories</h6>
+						</div>
+						<!-- media-body -->
+					</div>
+					<!-- media -->
+				</div>
+			</div>
+			<!-- kt-dashboard-one-title -->
 
-    <div class="kt-content kt-content-dashboard">
-      <div class="container">
-        <div class="kt-content-body">
-          <div class="kt-dashboard-one-title">
-            <div>
-              <h2 class="kt-dashboard-title">Hi, welcome back!</h2>
-              <p class="kt-dashboard-text">Katana is ready to take actions!</p>
-            </div>
-            <div class="kt-content-header-right">
-              <div class="media">
-                <div class="media-body">
-                  <label>Todays Date</label>
-                  <h6>{% now "jS F Y H:i" %}</h6>
-                </div><!-- media-body -->
-              </div><!-- media -->
-              <div class="media">
-                <div class="media-body">
-                  <label>Event Category</label>
-                  <h6>All Categories</h6>
-                </div><!-- media-body -->
-              </div><!-- media -->
-            </div>
-          </div><!-- kt-dashboard-one-title -->
+			<div class="kt-dashboard-nav">
+				<nav class="nav">
+					<a class="nav-link active" data-toggle="tab" href="#">Topology</a>
+				</nav>
 
-          <div class="kt-dashboard-nav">
-            <nav class="nav">
-              <a class="nav-link active" data-toggle="tab" href="#">Topology</a>
-            </nav>
+				<nav class="nav">
+					<a id="export" class="nav-link" href="#"
+						><i class="far fa-save"></i> Save Topology</a
+					>
+					<a id="export-pdf" class="nav-link" href="#"
+						><i class="far fa-file-pdf"></i> Export to PDF</a
+					>
+					<a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i></a>
+				</nav>
+			</div>
 
-            <nav class="nav">
-              <a id="export" class="nav-link" href="#"><i class="far fa-save"></i> Save Topology</a>
-              <a id="export-pdf" class="nav-link" href="#"><i class="far fa-file-pdf"></i> Export to PDF</a>
-              <a class="nav-link" href="#"><i class="fas fa-ellipsis-h"></i></a>
-            </nav>
-          </div>
-
-          <div class="row row-sm mg-b-20">
-            <div class="col-lg-7 ht-lg-100p">
-              <div class="card card-dashboard-one">
-                <div class="card-header">
-                  <div>
-                    <h6 class="card-title">Cluster Topology</h6>
-                    <p class="card-text">Here you can observe clusers and their pods.</p>
-                  </div>
-                  <div class="btn-group">
-                      <a href="{% url 'home' %}?topology=id" class="btn {% if topology == 'id' %}active{% endif %}">
-                        Pod ID
-                      </a>
-                      <a href="{% url 'home' %}?topology=namespace" class="btn {% if topology == 'namespace' %}active{% endif %}">
-                        Pod Namespace
-                      </a>
-                  </div>
-                </div><!-- card-header -->
-                <div class="card-body">
-                  <div class="" style="min-height: 300px;">
-                    <div style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px;" id="topology-chart"></div>
-                  </div><!-- flot-chart-wrapper -->
-                </div><!-- card-body -->
-              </div><!-- card -->
-            </div><!-- col -->
-            <div class="col-lg-5 ht-lg-100p">
-              <div class="card card-dashboard-pageviews">
-                <div class="card-header">
-                  <div>
-                    <h6 class="card-title">Pod Events</h6>
-                    <p class="card-text">Events on selected pod.</p>
-                  </div>
-                </div><!-- card-header -->
-                <div class="card-body">
-                    <div name="events" class="" style="min-height: 300px;">
-                    </div><!-- flot-chart-wrapper -->
-                </div><!-- card-body -->
-              </div><!-- card -->
-            </div><!-- col -->
-
-          </div><!-- row -->
-        </div><!-- kt-content-body -->
-      </div>
-    </div><!-- kt-content -->
+			<div class="row row-sm mg-b-20">
+				<div class="col-lg-7 ht-lg-100p">
+					<div class="card card-dashboard-one">
+						<div class="card-header">
+							<div>
+								<h6 class="card-title">Cluster Topology</h6>
+								<p class="card-text">
+									Here you can observe clusers and their pods.
+								</p>
+							</div>
+							<div class="btn-group">
+								<a
+									href="{% url 'home' %}?topology=id"
+									class="btn {% if topology == 'id' %}active{% endif %}"
+								>
+									Pod ID
+								</a>
+								<a
+									href="{% url 'home' %}?topology=namespace"
+									class="btn {% if topology == 'namespace' %}active{% endif %}"
+								>
+									Pod Namespace
+								</a>
+							</div>
+						</div>
+						<!-- card-header -->
+						<div class="card-body">
+							<div class="" style="min-height: 300px">
+								<div
+									style="
+										position: absolute;
+										top: 0px;
+										right: 0px;
+										bottom: 0px;
+										left: 0px;
+									"
+									id="topology-chart"
+								></div>
+							</div>
+							<!-- flot-chart-wrapper -->
+						</div>
+						<!-- card-body -->
+					</div>
+					<!-- card -->
+				</div>
+				<!-- col -->
+				<div class="col-lg-5 ht-lg-100p">
+					<div class="card card-dashboard-pageviews">
+						<div class="card-header">
+							<div>
+								<h6 class="card-title">Pod Events</h6>
+								<p class="card-text">Events on selected pod.</p>
+							</div>
+						</div>
+						<!-- card-header -->
+						<div class="card-body">
+							<div name="events" class="" style="min-height: 300px"></div>
+							<!-- flot-chart-wrapper -->
+						</div>
+						<!-- card-body -->
+					</div>
+					<!-- card -->
+				</div>
+				<!-- col -->
+			</div>
+			<!-- row -->
+		</div>
+		<!-- kt-content-body -->
+	</div>
+</div>
+<!-- kt-content -->
 
 {% endblock content %}
 
 <!-- Page JS Plugins goes HERE  -->
 {% block plugin_javascripts %}
 
-    <script src="{{ ASSETS_ROOT }}/lib/jquery.flot/jquery.flot.js"></script>
-    <script src="{{ ASSETS_ROOT }}/lib/jquery.flot/jquery.flot.resize.js"></script>
-    <script src="{{ ASSETS_ROOT }}/lib/chart.js/Chart.bundle.min.js"></script>
-    <script src="{{ ASSETS_ROOT }}/lib/peity/jquery.peity.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="{{ ASSETS_ROOT }}/lib/jquery.flot/jquery.flot.js"></script>
+<script src="{{ ASSETS_ROOT }}/lib/jquery.flot/jquery.flot.resize.js"></script>
+<script src="{{ ASSETS_ROOT }}/lib/chart.js/Chart.bundle.min.js"></script>
+<script src="{{ ASSETS_ROOT }}/lib/peity/jquery.peity.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 {% endblock plugin_javascripts %}
 
@@ -113,203 +158,300 @@
 {% block javascripts %}
 
 <script>
-// Constants for colors and layout lengths
-var LENGTH_MAIN = 350,
-    LENGTH_SERVER = 150,
-    LENGTH_SUB = 120,
-    WIDTH_SCALE = 2,
-    GRAY = "gray",
-    BLACK = "#2B1B17";
+	// Constants for colors and layout lengths
+	var LENGTH_MAIN = 350,
+	    LENGTH_SERVER = 150,
+	    LENGTH_SUB = 120,
+	    WIDTH_SCALE = 2,
+	    GRAY = "gray",
+	    BLACK = "#2B1B17";
 
-var nodes = null;
-var edges = null;
-var network = null;
-var currentNode = null;
+	var nodes = null;
+	var edges = null;
+	var network = null;
+	var currentNode = null;
 
-function draw() {
-    // Use vis.DataSet so that we can later update nodes individually
-    nodes = new vis.DataSet([]);
-    edges = new vis.DataSet([]);
+	function draw() {
+	    // Use vis.DataSet so that we can later update nodes individually
+	    nodes = new vis.DataSet([]);
+	    edges = new vis.DataSet([]);
 
-    // Add the root cluster node
-    nodes.add({
-        id: 0,
-        label: "Clusters",
-        group: "clusters",
-        value: 16,
-        shape: "image",
-        image: "/static/assets/img/logo.png"
-    });
+	    // Add the root cluster node
+	    nodes.add({
+	        id: 0,
+	        label: "Clusters",
+	        group: "clusters",
+	        value: 16,
+	        shape: "image",
+	        image: "/static/assets/img/logo.png"
+	    });
 
-    {% for cluster in clusters %}
-      {% with forloop.counter as id %}
-        // Add the cluster node
-        nodes.add({
-            id: {{ id }},
-            label: "{{ cluster.id|safe }}",
-            group: "network",
-            value: "{{ cluster.id|safe }}",
-            shape: "image",
-            image: "/static/assets/img/cluster.png"
-        });
-        edges.add({
-            from: 0,
-            to: {{ id }},
-            length: LENGTH_SUB,
-            color: GRAY,
-            fontColor: GRAY,
-            width: WIDTH_SCALE * 2,
-            label: null,
-        });
-        {% for pod in pods %}
-          {% if pod.cluster == cluster %}
-            // Add the pod node. We attach a pod_id property for AJAX updates.
-            nodes.add({
-                id: {{ id }}{{ forloop.counter }},
-                group: "host",
-                value: "{{ pod.id|safe }}",
-                pod_id: {{ pod.id }},
-                shape: "circle",
-                color: "yellow",
-                size: 16,
-            });
-            edges.add({
-                from: {{ id }}{{ forloop.counter }},
-                to: {{ id }},
-                length: LENGTH_SUB,
-                color: GRAY,
-                fontColor: GRAY,
-                width: WIDTH_SCALE * 2,
-                label: null
-            });
-          {% endif %}
-        {% endfor %}
-      {% endwith %}
-    {% endfor %}
+	    {% for cluster in clusters %}
+	      {% with forloop.counter as id %}
+	        // Add the cluster node
+	        nodes.add({
+	            id: {{ id }},
+	            label: "{{ cluster.id|safe }}",
+	            group: "network",
+	            value: "{{ cluster.id|safe }}",
+	            shape: "image",
+	            image: "/static/assets/img/cluster.png"
+	        });
+	        edges.add({
+	            from: 0,
+	            to: {{ id }},
+	            length: LENGTH_SUB,
+	            color: GRAY,
+	            fontColor: GRAY,
+	            width: WIDTH_SCALE * 2,
+	            label: null,
+	        });
+	        {% for pod in pods %}
+	          {% if pod.cluster == cluster %}
+	            // Add the pod node. We attach a pod_id property for AJAX updates.
+	            nodes.add({
+	                id: {{ id }}{{ forloop.counter }},
+	                group: "host",
+	                value: "{{ pod.id|safe }}",
+	                pod_id: {{ pod.id }},
+	                shape: "circle",
+	                color: "yellow",
+	                size: 16,
+	            });
+	            edges.add({
+	                from: {{ id }}{{ forloop.counter }},
+	                to: {{ id }},
+	                length: LENGTH_SUB,
+	                color: GRAY,
+	                fontColor: GRAY,
+	                width: WIDTH_SCALE * 2,
+	                label: null
+	            });
+	          {% endif %}
+	        {% endfor %}
+	      {% endwith %}
+	    {% endfor %}
 
-    var container = document.getElementById("topology-chart");
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-    var options = {
-        nodes: {
-            scaling: {
-                min: 16.0,
-                max: 16.0
-            }
-        },
-        edges: {
-            color: GRAY,
-            smooth: false
-        },
-        physics: {
-            barnesHut: {
-                gravitationalConstant: -30000
-            },
-            stabilization: {
-                iterations: 2500
-            }
-        }
-    };
+	    var container = document.getElementById("topology-chart");
+	    var data = {
+	        nodes: nodes,
+	        edges: edges
+	    };
+	    var options = {
+	        nodes: {
+	            scaling: {
+	                min: 16.0,
+	                max: 16.0
+	            }
+	        },
+	        edges: {
+	            color: GRAY,
+	            smooth: false
+	        },
+	        physics: {
+	            barnesHut: {
+	                gravitationalConstant: -30000
+	            },
+	            stabilization: {
+	                iterations: 2500
+	            }
+	        }
+	    };
 
-    network = new vis.Network(container, data, options);
-    // Disable physics to keep node positions fixed
-    network.setOptions({
-        nodes: {
-            fixed: { x: true, y: true }
-        }
-    });
-}
+	    network = new vis.Network(container, data, options);
+	    // Disable physics to keep node positions fixed
+	    network.setOptions({
+	        nodes: {
+	            fixed: { x: true, y: true }
+	        }
+	    });
+	}
 
-draw();
+	draw();
 
-document.getElementById("export").addEventListener("click", function() {
-    const container = document.getElementById("topology-chart");
-    const canvas = container.getElementsByTagName("canvas")[0];
-    const imgData = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
+	document.getElementById("export").addEventListener("click", function() {
+	    const container = document.getElementById("topology-chart");
+	    const canvas = container.getElementsByTagName("canvas")[0];
+	    const imgData = canvas.toDataURL("image/png");
+	    const link = document.createElement("a");
 
-    link.href = imgData;
-    link.download = "topology.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-});
+	    link.href = imgData;
+	    link.download = "topology.png";
+	    document.body.appendChild(link);
+	    link.click();
+	    document.body.removeChild(link);
+	});
 
-document.getElementById("export-pdf").addEventListener("click", function() {
-    const container = document.getElementById("topology-chart");
-    const canvas = container.getElementsByTagName("canvas")[0];
-    const imgData = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
+	document.getElementById("export-pdf").addEventListener("click", function() {
+	    const container = document.getElementById("topology-chart");
+	    const canvas = container.getElementsByTagName("canvas")[0];
+	    const imgData = canvas.toDataURL("image/png");
+	    const link = document.createElement("a");
 
-    const pdf = new jspdf.jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: [canvas.width, canvas.height]
-    });
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save("topology.pdf");
-});
+	    const pdf = new jspdf.jsPDF({
+	        orientation: 'landscape',
+	        unit: 'pt',
+	        format: [canvas.width, canvas.height]
+	    });
+	    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+	    pdf.save("topology.pdf");
+	});
 
-function updatePodStatus(node) {
-    var url = "{% url 'get_pod_status' 0 %}".replace("0", node.pod_id);
+	function updatePodStatus(node) {
+	    var url = "{% url 'get_pod_status' 0 %}".replace("0", node.pod_id);
 
-    $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "json",
-        success: function(response) {
-            nodes.update({id: node.id, color: response.color});
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching pod status for node " + node.id + ":", error);
-        }
-    });
-}
+	    $.ajax({
+	        url: url,
+	        type: "GET",
+	        dataType: "json",
+	        success: function(response) {
+	            nodes.update({id: node.id, color: response.color});
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error fetching pod status for node " + node.id + ":", error);
+	        }
+	    });
+	}
 
-function fetchEvents() {
-    if (!currentNode) {
-        return;
-    }
+	function fetchEvents() {
+	    if (!currentNode) {
+	        return;
+	    }
 
-    var url = "{% url 'get_pod_events' 0 %}".replace("0", currentNode.pod_id);
+	    var url = "{% url 'get_pod_events' 0 %}".replace("0", currentNode.pod_id);
 
-    $.ajax({
-        url: url,
-        type: "GET",
-        dataType: "html",
-        success: function(response) {
-            $('[name="events"]').html(response);
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching pod events for node " + currentNode.id + ":", error);
-        }
-    });
-}
+	    $.ajax({
+	        url: url,
+	        type: "GET",
+	        dataType: "html",
+	        success: function(response) {
+	            $('[name="events"]').html(response);
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("Error fetching pod events for node " + currentNode.id + ":", error);
+	        }
+	    });
+	}
 
-function updateAllPodsStatus() {
-    nodes.get().forEach(function(node) {
-        if (node.pod_id) {
-            updatePodStatus(node);
-        }
-    });
-}
+	function updateAllPodsStatus() {
+	    nodes.get().forEach(function(node) {
+	        if (node.pod_id) {
+	            updatePodStatus(node);
+	        }
+	    });
+	}
 
-network.on("click", function (params) {
-    var nodeID = params['nodes']['0'];
-    var node = nodes.get(nodeID);
+	network.on("click", function (params) {
+	    var nodeID = params['nodes']['0'];
+	    var node = nodes.get(nodeID);
 
-    if (node) {
-        if (node.pod_id) {
-            currentNode = node;
-            fetchEvents();
-        }
-    }
-});
+	    if (node) {
+	        if (node.pod_id) {
+	            currentNode = node;
+	            fetchEvents();
+	        }
+	    }
+	});
 
-setInterval(updateAllPodsStatus, 2000);
-setInterval(fetchEvents, 3000);
+	setInterval(updateAllPodsStatus, 2000);
+	setInterval(fetchEvents, 3000);
+
+	function updateGraph(newPods) {
+	    // Get current nodes except the root and cluster nodes
+	    var currentNodes = nodes.get().filter(node => node.pod_id);
+	    var currentPodIds = new Set(currentNodes.map(node => node.pod_id));
+
+	    // Get new pod IDs
+	    var newPodIds = new Set(newPods.map(pod => pod.id));
+
+	    // Remove nodes that no longer exist
+	    currentNodes.forEach(node => {
+	        if (!newPodIds.has(node.pod_id)) {
+	            nodes.remove(node.id);
+	            // Remove associated edges
+	            edges.remove(edges.get().filter(edge => edge.from === node.id || edge.to === node.id));
+	        }
+	    });
+
+	    // Update or add nodes
+	    newPods.forEach(pod => {
+	        // Find cluster node for this pod
+	        var clusterNode = nodes.get().find(node =>
+	            node.group === "network" &&
+	            node.value === pod.cluster.toString()
+	        );
+
+	        if (!clusterNode) {
+	            console.error("Cluster not found for pod:", pod);
+	            return;
+	        }
+
+	        // Generate consistent ID for pod node
+	        var nodeId = parseInt(clusterNode.id.toString() + pod.id.toString());
+
+	        if (nodes.get(nodeId)) {
+	            // Update existing node
+	            nodes.update({
+	                id: nodeId,
+	                pod_id: pod.id,
+	                label: pod.name,
+	                title: `Namespace: ${pod.namespace}\nStatus: ${pod.status}`,
+	                color: getColorForStatus(pod.status)
+	            });
+	        } else {
+	            // Add new node
+	            nodes.add({
+	                id: nodeId,
+	                pod_id: pod.id,
+	                label: pod.name,
+	                group: "host",
+	                shape: "circle",
+	                size: 16,
+	                title: `Namespace: ${pod.namespace}\nStatus: ${pod.status}`,
+	                color: getColorForStatus(pod.status)
+	            });
+
+	            // Add edge to cluster
+	            edges.add({
+	                from: nodeId,
+	                to: clusterNode.id,
+	                length: LENGTH_SUB,
+	                color: GRAY,
+	                fontColor: GRAY,
+	                width: WIDTH_SCALE * 2,
+	                label: null
+	            });
+	        }
+	    });
+	}
+
+	function getColorForStatus(status) {
+	    switch(status) {
+	        case 'Dead':
+	            return 'red';
+	        case 'Alive':
+	            return 'green';
+	        case 'Affected':
+	            return 'yellow';
+	        default:
+	            return 'gray';
+	    }
+	}
+
+	// Keep the existing updatePodGraph function but improve error handling
+	function updatePodGraph() {
+	    fetch('/get_pods/')
+	        .then(response => response.json())
+	        .then(data => {
+	            updateGraph(data.pods);
+	        })
+	        .catch(error => {
+	            console.error('Error fetching pod updates:', error);
+	        });
+	}
+
+	// Keep all existing intervals, but adjust the update frequency
+	setInterval(updatePodGraph, 5000);  // Keep this with existing intervals
 </script>
 
 {% endblock javascripts %}
