@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 @app.route("/alert", methods=["POST"])
 def alert():
+    print("AHHHH PROD IS DOWN :(")
     if request.content_type != "application/json":
         return "Content-Type must be application/json", 400
 

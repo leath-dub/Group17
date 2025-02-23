@@ -14,5 +14,5 @@ spec:
       labels:
         severity: severe
       annotations:
-        summary: "High memory usage on pod {{ $labels.pod }}"
-        description: "Pod {{ $labels.pod }} has memory usage above 800 MB for over 10s."
+        summary: "High memory usage on pod {{ `{{ $labels.pod }}` }}"
+        description: "Pod {{ `{{ $labels.pod }}` }} has memory usage above 800 MB for over 10s."

@@ -11,11 +11,13 @@ start_forwarding() {
     kubectl port-forward service/agent-chart-grafana 8080:80 -n $NAMESPACE & echo $! > /tmp/port-forward-grafana.pid
     kubectl port-forward service/dodgy-service-chart-service 8000:8000 & echo $! > /tmp/port-forward-dodgy-service-metrics.pid
     kubectl port-forward service/dodgy-service-chart-service 8082:8082 & echo $! > /tmp/port-forward-dodgy-service-api.pid
+    kubectl port-forward service/alertmanager-operated 8083:9093 -n $NAMESPACE & echo $! > /tmp/port-forward-alertmanager.pid
 
     echo "Dodgy-service metrics on :8000"
     echo "Grafana active on :8080"
     echo "Agent active on :8081"
     echo "Dodgy-service api on :8082"
+    echo "Alertmanager api on :8083"
     echo "Prometheus active on :9090"
 }
 

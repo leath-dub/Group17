@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: custom-alertmanager
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: custom-alertmanager
+spec:
+  route:
+    receiver: default
+    routes:
+      - matchers:
+        - name: severity
+          value: severe
+        receiver: webhook_receiver
+        groupWait: 30s
+        groupInterval: 30s
+        repeatInterval: 1m
+  receivers:
+    - name: default
+    - name: webhook_receiver
+      webhookConfigs:
+        - url: "http://agent-chart-agent-service.default.svc.cluster.local:80/alert"

@@ -1,6 +1,17 @@
 monitoring-stack:
   enabled: true
 
+kube-prometheus-stack:
+  alertmanager:
+    enabled: true
+    alertmanagerSpec:
+      replicas: 1
+      # Make sure it can see your CR
+      alertmanagerConfigSelector:
+        matchLabels:
+          app.kubernetes.io/name: custom-alertmanager
+      alertmanagerConfigNamespaceSelector: {}
+
 replicaCount: 1
 
 image:
