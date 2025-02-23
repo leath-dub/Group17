@@ -12,7 +12,7 @@ def delete_pod(name, namespace):
         # Try to load in-cluster config first (for when running inside k8s)
         try:
             load_incluster_config()
-        except:
+        except: 
             # Fall back to local kubeconfig if not running in cluster
             load_kube_config()
 
