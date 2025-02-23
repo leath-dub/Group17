@@ -17,5 +17,7 @@ spec:
           image: "{{ .Values.image_ui.repository }}:{{ .Values.image_ui.tag }}"
           imagePullPolicy: "{{ .Values.image_ui.pullPolicy }}"
           ports:
-            - containerPort: {{ .Values.service_ui.containerPort }}
+            - containerPort: {{ .Values.service_ui.containerPortUI }}
               name: ui-http
+            - containerPort: {{ .Values.service_ui.containerPortAPI }}
+              name: api-http
